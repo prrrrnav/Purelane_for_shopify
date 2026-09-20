@@ -1,0 +1,139 @@
+{{ 'section-hero.css' | asset_url | stylesheet_tag }}
+
+<div class="purelane-hero" style="background-color: {{ section.settings.bg_color }};">
+  <div class="page-width purelane-hero__container">
+    <div class="purelane-hero__content">
+      {% if section.settings.subheading != blank %}
+        <div class="purelane-hero__badges">
+          <span class="purelane-badge">{{ section.settings.subheading }}</span>
+        </div>
+      {% endif %}
+
+      <h1 class="purelane-hero__title">{{ section.settings.title }}</h1>
+      <p class="purelane-hero__text">{{ section.settings.description }}</p>
+
+      <div class="purelane-hero__actions">
+        {% if section.settings.primary_btn_text != blank %}
+          <a href="{{ section.settings.primary_btn_link }}" class="button button--primary">
+            {{ section.settings.primary_btn_text }}
+          </a>
+        {% endif %}
+        {% if section.settings.secondary_btn_text != blank %}
+          <a href="{{ section.settings.secondary_btn_link }}" class="button button--secondary">
+            {{ section.settings.secondary_btn_text }}
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="purelane-hero__offers">
+        {% for block in section.blocks %}
+          <div class="purelane-offer-card">
+            <span class="purelane-offer-card__tag">{{ block.settings.tag }}</span>
+            <strong class="purelane-offer-card__price">{{ block.settings.price }}</strong>
+            <span class="purelane-offer-card__compare">{{ block.settings.compare_price }}</span>
+            <span class="purelane-offer-card__save">{{ block.settings.save_text }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Purelane Hero",
+  "tag": "section",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f4f1ea"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading Tag",
+      "default": "PLANT POWERED • SAFE FOR KIDS & PETS"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "CLEAN THAT LASTS"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it."
+    },
+    {
+      "type": "text",
+      "id": "primary_btn_text",
+      "label": "Primary Button Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "primary_btn_link",
+      "label": "Primary Button Link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_btn_text",
+      "label": "Secondary Button Text",
+      "default": "HOW IT WORKS"
+    },
+    {
+      "type": "url",
+      "id": "secondary_btn_link",
+      "label": "Secondary Button Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "offer",
+      "name": "Offer Card",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tag",
+          "label": "Tag",
+          "default": "SINGLE BOTTLE"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Price",
+          "default": "₹200"
+        },
+        {
+          "type": "text",
+          "id": "compare_price",
+          "label": "Compare Price",
+          "default": "₹299"
+        },
+        {
+          "type": "text",
+          "id": "save_text",
+          "label": "Savings Badge",
+          "default": "33% OFF"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Purelane Hero",
+      "blocks": [
+        { "type": "offer", "settings": { "tag": "SINGLE BOTTLE", "price": "₹200", "compare_price": "₹299", "save_text": "33% OFF" } },
+        { "type": "offer", "settings": { "tag": "ANY 2 PRODUCTS", "price": "₹349", "compare_price": "₹598", "save_text": "SAVE ₹249" } },
+        { "type": "offer", "settings": { "tag": "ANY 3 PRODUCTS", "price": "₹499", "compare_price": "₹897", "save_text": "SAVE ₹398" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
