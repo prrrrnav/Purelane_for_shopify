@@ -1,0 +1,107 @@
+{{ 'purelane-base.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="{{ 'purelane-bundles.css' | asset_url }}">
+
+<section class="pl-scope pl-sec" id="{{ section.settings.anchor | default: 'bundles' }}">
+  <div class="pl-wrap">
+    <div class="pl-glass pl-sec-pad pl-rv" style="margin-bottom:16px;padding:clamp(24px,4vw,40px)">
+      <div class="pl-panel-head" style="margin-bottom:0">
+        {%- if section.settings.kicker != blank -%}<span class="pl-kicker">{{ section.settings.kicker }}</span>{%- endif -%}
+        <h2 class="pl-d2" style="margin-top:12px">{{ section.settings.heading }}</h2>
+        {%- if section.settings.subheading != blank -%}<p class="pl-lede" style="margin:0 auto">{{ section.settings.subheading }}</p>{%- endif -%}
+      </div>
+    </div>
+
+    <div class="pl-tiers">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'tier' and block.settings.tier_product != blank -%}
+          {%- liquid
+            assign tp = block.settings.tier_product
+            assign compare = tp.compare_at_price
+            assign per_item = tp.price
+            if block.settings.item_qty > 0
+              assign per_item = tp.price | divided_by: block.settings.item_qty
+            endif
+          -%}
+          <article class="pl-glass pl-tier {% if block.settings.featured %}pl-best{% endif %} pl-rv" {{ block.shopify_attributes }}>
+            {%- if block.settings.tag != blank -%}<span class="pl-tag">{{ block.settings.tag }}</span>{%- endif -%}
+
+            <div class="pl-tierpix" aria-hidden="true">
+              {%- for i in (1..5) -%}
+                {%- assign img_key = 'preview_product_' | append: i -%}
+                {%- assign img_product = block.settings[img_key] -%}
+                {%- if img_product != blank -%}
+                  {%- if img_product.featured_media -%}
+                    {{ img_product.featured_media | image_url: width: 100 | image_tag: loading: 'lazy', alt: '' }}
+                  {%- else -%}
+                    <span class="pl-noimg"></span>
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+
+            <div class="pl-qty">{{ block.settings.item_qty }}<small>{{ 'sections.bundles.products' | t: default: 'Products' }}</small></div>
+            <div class="pl-price">{{ tp.price | money }} {%- if compare > tp.price -%} <s>{{ compare | money }}</s>{%- endif -%}</div>
+            <p class="pl-body-s" style="font-size:12px">{{ 'sections.bundles.flat' | t: default: 'Flat' }} {{ per_item | money }} {{ 'sections.bundles.per_product' | t: default: 'per product' }}</p>
+
+            <ul>
+              {%- for i in (1..4) -%}
+                {%- assign feat_key = 'feature_' | append: i -%}
+                {%- assign feat = block.settings[feat_key] -%}
+                {%- if feat != blank -%}
+                  <li>{% render 'purelane-icon', name: 'check' %}{{ feat }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+
+            <a class="pl-btn {% if block.settings.featured %}pl-btn-primary{% else %}pl-btn-ghost{% endif %}" href="{{ tp.url }}">
+              {{ block.settings.cta_label | default: 'Build this box' }}
+              {%- if block.settings.featured -%}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>{%- endif -%}
+            </a>
+          </article>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'purelane-sections.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Purelane Bundles",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Section anchor ID", "default": "bundles" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Build your bundle" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "One box. Every room." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading" }
+  ],
+  "blocks": [
+    {
+      "type": "tier",
+      "name": "Tier",
+      "settings": [
+        { "type": "product", "id": "tier_product", "label": "Tier product", "info": "The actual \"build a box\" product this tier sells. Price and compare-at price come from here." },
+        { "type": "text", "id": "tag", "label": "Tag", "default": "Starter" },
+        { "type": "checkbox", "id": "featured", "label": "Highlight as most popular", "default": false },
+        { "type": "range", "id": "item_qty", "label": "Products included", "min": 1, "max": 8, "step": 1, "default": 2 },
+        { "type": "text", "id": "cta_label", "label": "Button label", "default": "Build this box" },
+        { "type": "header", "content": "Preview thumbnails (optional, up to 5)" },
+        { "type": "product", "id": "preview_product_1", "label": "Product 1" },
+        { "type": "product", "id": "preview_product_2", "label": "Product 2" },
+        { "type": "product", "id": "preview_product_3", "label": "Product 3" },
+        { "type": "product", "id": "preview_product_4", "label": "Product 4" },
+        { "type": "product", "id": "preview_product_5", "label": "Product 5" },
+        { "type": "header", "content": "Features" },
+        { "type": "text", "id": "feature_1", "label": "Feature 1", "default": "Free shipping across India" },
+        { "type": "text", "id": "feature_2", "label": "Feature 2" },
+        { "type": "text", "id": "feature_3", "label": "Feature 3" },
+        { "type": "text", "id": "feature_4", "label": "Feature 4" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    { "name": "Purelane Bundles", "blocks": [ { "type": "tier" }, { "type": "tier" }, { "type": "tier" } ] }
+  ]
+}
+{% endschema %}

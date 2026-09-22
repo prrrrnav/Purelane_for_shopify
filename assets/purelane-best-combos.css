@@ -1,0 +1,29 @@
+.pl-comborail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.pl-comborail::-webkit-scrollbar{height:6px}
+.pl-comborail::-webkit-scrollbar-thumb{background:rgba(236,230,247,.24);border-radius:999px}
+.pl-combo{flex:0 0 auto;width:min(84vw,320px);scroll-snap-align:start;display:flex;flex-direction:column}
+@media(min-width:1040px){.pl-combo{width:calc((100% - 3 * 14px) / 3.3)}}
+
+.pl-tray{position:relative;padding:18px 16px 8px}
+.pl-save{position:absolute;top:10px;left:10px;padding:5px 10px;border-radius:999px;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:rgba(23,16,43,.6);color:var(--pl-accent)}
+.pl-flag{position:absolute;top:10px;right:10px;padding:5px 10px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(135deg,var(--pl-accent-2),#5d8d1c);color:#08211a}
+.pl-stack{display:flex;align-items:flex-end;gap:6px;justify-content:center;padding-top:26px}
+.pl-it{display:flex;flex-direction:column;align-items:center;gap:6px;width:78px}
+.pl-it .pl-pimg,.pl-it span.pl-pimg{width:52px;height:78px;object-fit:contain}
+.pl-it span:last-child{font-size:9.5px;color:var(--pl-paper-3);line-height:1.2;text-align:center}
+.pl-plus{font-size:16px;color:var(--pl-paper-3);align-self:center;padding-bottom:24px}
+
+.pl-body{padding:16px}
+.pl-body h3{font-family:'Outfit',sans-serif;font-size:15.5px;font-weight:700;text-transform:uppercase;color:var(--pl-surface);margin-bottom:4px}
+.pl-cnt{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-accent);margin-bottom:10px}
+.pl-inc{font-size:12.5px;color:var(--pl-paper-2);line-height:1.55;margin-bottom:14px}
+.pl-prow{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;font-family:'Outfit',sans-serif}
+.pl-prow strong{font-size:19px;color:var(--pl-surface)}
+.pl-prow s{font-size:13px;color:var(--pl-paper-3)}
+.pl-prow em{font-style:normal;font-size:10.5px;font-weight:800;color:var(--pl-accent)}
+.pl-fine{font-size:10.5px;color:var(--pl-paper-3);margin-bottom:14px}
+.pl-body .pl-btn{width:100%;justify-content:center}
+
+.pl-swipecue{display:flex;align-items:center;gap:7px;justify-content:center;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pl-paper-3)}
+.pl-swipecue svg{width:15px;height:15px}
+@media(min-width:1040px){.pl-swipecue{display:none}}

@@ -1,0 +1,78 @@
+{{ 'purelane-base.css' | asset_url | stylesheet_tag }}
+<link rel="stylesheet" href="{{ 'purelane-reviews-rail.css' | asset_url }}">
+
+<section class="pl-scope pl-sec pl-revband" id="{{ section.settings.anchor | default: 'reviews' }}">
+  <div class="pl-wrap">
+    <div class="pl-revhead pl-rv">
+      {%- if section.settings.kicker != blank -%}<span class="pl-kicker">{{ section.settings.kicker }}</span>{%- endif -%}
+      {%- if section.settings.avg_rating != blank -%}
+        <span class="pl-agg"><span class="pl-st" aria-hidden="true">★★★★★</span> <b>{{ section.settings.avg_rating }}</b>
+          {{ 'sections.reviews.from' | t: default: 'from' }} {{ section.settings.review_count }} {{ 'sections.reviews.reviews' | t: default: 'reviews' }}</span>
+      {%- endif -%}
+      {%- if section.settings.extra_stat != blank -%}<span class="pl-agg">{{ section.settings.extra_stat }}</span>{%- endif -%}
+    </div>
+  </div>
+
+  {%- assign review_count_blocks = 0 -%}
+  {%- for block in section.blocks -%}{%- if block.type == 'review' -%}{%- assign review_count_blocks = review_count_blocks | plus: 1 -%}{%- endif -%}{%- endfor -%}
+
+  {%- if review_count_blocks > 0 -%}
+  <div class="pl-revrail pl-rv" aria-label="{{ 'sections.reviews.aria_label' | t: default: 'Customer reviews' }}">
+    <div class="pl-revtrack" data-pl-marquee>
+      {%- comment -%} Render the set twice so the CSS marquee can loop seamlessly; hidden from AT on the second pass. {%- endcomment -%}
+      {%- for pass in (1..2) -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'review' -%}
+            <article class="pl-glass-2 pl-rcard" {% if pass == 2 %}aria-hidden="true" tabindex="-1"{% endif %} {% if pass == 1 %}{{ block.shopify_attributes }}{% endif %}>
+              {%- if block.settings.rating != blank -%}
+                <div class="pl-st" aria-hidden="true">{% assign r = block.settings.rating | times: 1 %}{% for i in (1..5) %}{% if i <= r %}★{% else %}☆{% endif %}{% endfor %}</div>
+              {%- endif -%}
+              {%- if block.settings.title != blank -%}<h5>{{ block.settings.title }}</h5>{%- endif -%}
+              {%- if block.settings.body != blank -%}<p>{{ block.settings.body }}</p>{%- endif -%}
+              <div class="pl-who">
+                {% render 'purelane-icon', name: 'check' %}
+                {%- if block.settings.author != blank -%}<b>{{ block.settings.author }}</b>{%- endif -%}
+                {%- if block.settings.product_label != blank -%}<span>· {{ block.settings.product_label }}</span>{%- endif -%}
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+  {%- else -%}
+    <p class="pl-wrap pl-body-s">{{ 'sections.reviews.empty' | t: default: 'Add review blocks in the theme editor.' }}</p>
+  {%- endif -%}
+</section>
+
+<script src="{{ 'purelane-sections.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Purelane Reviews Rail",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Section anchor ID", "default": "reviews" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "That's what they said" },
+    { "type": "text", "id": "avg_rating", "label": "Average rating", "default": "4.8", "info": "For a live aggregate, connect a reviews app and replace this with its rating metafield/liquid tag." },
+    { "type": "text", "id": "review_count", "label": "Review count label", "default": "8,000+" },
+    { "type": "text", "id": "extra_stat", "label": "Extra stat", "default": "Loved by 12 lakh+ homes" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "text", "id": "title", "label": "Title", "default": "Works like a charm" },
+        { "type": "textarea", "id": "body", "label": "Review text" },
+        { "type": "text", "id": "author", "label": "Author", "default": "Anita" },
+        { "type": "text", "id": "product_label", "label": "Product label", "default": "Laundry detergent" }
+      ]
+    }
+  ],
+  "max_blocks": 16,
+  "presets": [
+    { "name": "Purelane Reviews Rail", "blocks": [ { "type": "review" }, { "type": "review" }, { "type": "review" }, { "type": "review" }, { "type": "review" }, { "type": "review" } ] }
+  ]
+}
+{% endschema %}

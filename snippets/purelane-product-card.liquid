@@ -1,0 +1,79 @@
+{%- comment -%}
+  Renders one Purelane product card.
+  Accepts:
+    product        - required, a Shopify product object
+    card_tag       - optional, badge text override (defaults to computed: Sold out / Sale / New / Best seller)
+    reveal_class   - optional, e.g. "pl-rv pl-rv-d1"
+{%- endcomment -%}
+
+{%- liquid
+  assign p = product
+  assign compare = p.compare_at_price
+  assign on_sale = false
+  if compare > p.price
+    assign on_sale = true
+    assign pct_off = compare | minus: p.price | times: 100.0 | divided_by: compare | round
+  endif
+
+  assign badge_text = card_tag
+  if badge_text == blank
+    if p.available == false
+      assign badge_text = 'sold_out' | t: default: 'Sold out'
+    elsif p.created_at_string and p.published_at
+    endif
+  endif
+-%}
+
+<article class="pl-glass pl-card {{ reveal_class }}" data-pl-product-id="{{ p.id }}">
+  <div class="pl-shot">
+    {%- if p.available == false -%}
+      <span class="pl-pill pl-pill-out">{{ 'products.product.sold_out' | t: default: 'Sold out' }}</span>
+    {%- elsif on_sale -%}
+      <span class="pl-pill">{{ pct_off }}% {{ 'products.product.off' | t: default: 'off' }}</span>
+    {%- elsif card_tag != blank -%}
+      <span class="pl-pill">{{ card_tag }}</span>
+    {%- endif -%}
+
+    {%- if p.featured_media -%}
+      {{ p.featured_media | image_url: width: 700 | image_tag:
+        loading: 'lazy',
+        widths: '260,400,520,700',
+        sizes: '(min-width: 720px) 260px, 44vw',
+        alt: p.featured_media.alt | default: p.title,
+        class: 'pl-shot-img'
+      }}
+    {%- else -%}
+      <div class="pl-noimg" role="img" aria-label="{{ p.title | escape }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 7h16v13H4z"/><path d="M9 7V5.5A2.5 2.5 0 0 1 11.5 3h1A2.5 2.5 0 0 1 15 5.5V7"/></svg>
+      </div>
+    {%- endif -%}
+  </div>
+
+  <h4 class="pl-card-title" title="{{ p.title | escape }}">
+    <a href="{{ p.url }}">{{ p.title }}</a>
+  </h4>
+
+  {%- if p.metafields.reviews.rating.value != blank -%}
+    <div class="pl-rate">
+      <b>★ {{ p.metafields.reviews.rating.value.rating }}</b>
+      · {{ p.metafields.reviews.rating_count.value | default: 0 }} {{ 'products.product.reviews' | t: default: 'reviews' }}
+    </div>
+  {%- endif -%}
+
+  <div class="pl-pr">
+    <strong>{{ p.price | money }}</strong>
+    {%- if on_sale -%}<s>{{ compare | money }}</s><em>{{ pct_off }}% off</em>{%- endif -%}
+  </div>
+
+  {%- if p.available -%}
+    {%- form 'product', p, class: 'pl-card-form' -%}
+      <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}">
+      <button type="submit" class="pl-btn pl-btn-ghost pl-btn-sm" name="add"
+        {% if p.variants.size > 1 %}aria-disabled="true" title="{{ 'products.product.choose_options' | t: default: 'Choose options' }}"{% endif %}>
+        {{ 'products.product.add_to_cart' | t: default: 'Add to cart' }}
+      </button>
+    {%- endform -%}
+  {%- else -%}
+    <button class="pl-btn pl-btn-ghost pl-btn-sm" disabled>{{ 'products.product.sold_out' | t: default: 'Sold out' }}</button>
+  {%- endif -%}
+</article>
