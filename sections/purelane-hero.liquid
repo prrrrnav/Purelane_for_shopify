@@ -55,7 +55,8 @@
             assign third_product = block.settings.product_3
           -%}
           <div class="pl-hslide {% if forloop.first %}pl-on{% endif %}" {{ block.shopify_attributes }}>
-            {%- for key in "product_1,product_2,product_3" | split: "," -%}
+            {%- assign pl_slide_keys = "product_1,product_2,product_3" | split: "," -%}
+            {%- for key in pl_slide_keys -%}
               {%- assign prod = block.settings[key] -%}
               {%- if prod != blank -%}
                 {%- if prod.featured_media -%}
